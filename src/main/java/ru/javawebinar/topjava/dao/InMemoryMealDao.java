@@ -6,19 +6,29 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class InMemoryMealDao implements MealDao {
 
-    private ConcurrentMap<Integer, Meal> mealConcurrentMap;
+    private final ConcurrentMap<Integer, Meal> mealConcurrentMap;
     private final AtomicInteger id = new AtomicInteger(1);
 
+    public InMemoryMealDao() {
+        mealConcurrentMap = new ConcurrentHashMap<>();
+        create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
+        create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
+        create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
+        create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
+        create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
+        create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
+        create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
+    }
 
     @Override
     public List<Meal> getAll() {
-        return new ArrayList<>(getMealConcurrentMap().values());
+        return new ArrayList<>(mealConcurrentMap.values());
     }
 
     @Override
@@ -35,6 +45,9 @@ public class InMemoryMealDao implements MealDao {
 
     @Override
     public Meal update(Meal meal) {
+        if (getById(meal.getId()) == null) {
+            return null;
+        }
         mealConcurrentMap.put(meal.getId(), meal);
         return meal;
     }
@@ -42,23 +55,6 @@ public class InMemoryMealDao implements MealDao {
     @Override
     public void delete(int id) {
         mealConcurrentMap.remove(id);
-    }
-
-    private ConcurrentMap<Integer, Meal> getMealConcurrentMap() {
-        if (mealConcurrentMap == null) {
-            List<Meal> meals = new ArrayList<>();
-            meals.add(new Meal(getId(), LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
-            meals.add(new Meal(getId(), LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
-            meals.add(new Meal(getId(), LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
-            meals.add(new Meal(getId(), LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
-            meals.add(new Meal(getId(), LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
-            meals.add(new Meal(getId(), LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
-            meals.add(new Meal(getId(), LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
-
-            mealConcurrentMap = meals.stream().collect(Collectors.toConcurrentMap(Meal::getId, meal -> meal));
-            return mealConcurrentMap;
-        }
-        return mealConcurrentMap;
     }
 
     private int getId() {

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class MealServlet extends HttpServlet {
 
-    MealDao mealDao;
+    private MealDao mealDao;
     public static final int CALORIES_PER_DAY = 2000;
 
     @Override
@@ -30,7 +30,7 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if ("getAll".equals(action) || action == null) {
+        if (action == null) {
             List<Meal> meals = mealDao.getAll();
             List<MealTo> mealTo = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
             req.setAttribute("mealTo", mealTo);
@@ -45,7 +45,7 @@ public class MealServlet extends HttpServlet {
         } else if ("delete".equals(action)) {
             int id = Integer.parseInt(req.getParameter("id"));
             mealDao.delete(id);
-            resp.sendRedirect(req.getContextPath() + "/meals?action=getAll");
+            resp.sendRedirect(req.getContextPath() + "/meals");
         }
     }
 
@@ -65,6 +65,6 @@ public class MealServlet extends HttpServlet {
             meal = new Meal(Integer.parseInt(id), dateTime, description, calories);
             mealDao.update(meal);
         }
-        resp.sendRedirect(req.getContextPath() + "/meals?action=getAll");
+        resp.sendRedirect(req.getContextPath() + "/meals");
     }
 }
