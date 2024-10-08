@@ -18,8 +18,8 @@ import java.util.List;
 
 public class MealServlet extends HttpServlet {
 
-    private MealDao mealDao;
     public static final int CALORIES_PER_DAY = 2000;
+    private MealDao mealDao;
 
     @Override
     public void init() throws ServletException {
@@ -30,12 +30,7 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if (action == null) {
-            List<Meal> meals = mealDao.getAll();
-            List<MealTo> mealTo = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
-            req.setAttribute("mealTo", mealTo);
-            req.getRequestDispatcher("WEB-INF/jsp/meals.jsp").forward(req, resp);
-        } else if ("insert".equals(action)) {
+        if ("insert".equals(action)) {
             req.getRequestDispatcher("WEB-INF/jsp/meal.jsp").forward(req, resp);
         } else if ("update".equals(action)) {
             int id = Integer.parseInt(req.getParameter("id"));
@@ -46,6 +41,11 @@ public class MealServlet extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             mealDao.delete(id);
             resp.sendRedirect(req.getContextPath() + "/meals");
+        } else {
+            List<Meal> meals = mealDao.getAll();
+            List<MealTo> mealTo = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
+            req.setAttribute("mealTo", mealTo);
+            req.getRequestDispatcher("WEB-INF/jsp/meals.jsp").forward(req, resp);
         }
     }
 
