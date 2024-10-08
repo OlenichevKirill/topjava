@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.storage;
+package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.model.Meal;
 
@@ -10,15 +10,41 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class MealInMemory {
+public class InMemoryMealDao implements MealDao {
 
-    private static ConcurrentMap<Integer, Meal> mealConcurrentMap;
-    private static final AtomicInteger id = new AtomicInteger(1);
+    private ConcurrentMap<Integer, Meal> mealConcurrentMap;
+    private final AtomicInteger id = new AtomicInteger(1);
 
-    private MealInMemory() {
+
+    @Override
+    public List<Meal> getAll() {
+        return new ArrayList<>(getMealConcurrentMap().values());
     }
 
-    public static ConcurrentMap<Integer, Meal> getMealConcurrentMap() {
+    @Override
+    public Meal getById(int id) {
+        return mealConcurrentMap.get(id);
+    }
+
+    @Override
+    public Meal create(Meal meal) {
+        Meal mealCreate = new Meal(getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories());
+        mealConcurrentMap.put(mealCreate.getId(), mealCreate);
+        return mealCreate;
+    }
+
+    @Override
+    public Meal update(Meal meal) {
+        mealConcurrentMap.put(meal.getId(), meal);
+        return meal;
+    }
+
+    @Override
+    public void delete(int id) {
+        mealConcurrentMap.remove(id);
+    }
+
+    private ConcurrentMap<Integer, Meal> getMealConcurrentMap() {
         if (mealConcurrentMap == null) {
             List<Meal> meals = new ArrayList<>();
             meals.add(new Meal(getId(), LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
@@ -35,7 +61,7 @@ public class MealInMemory {
         return mealConcurrentMap;
     }
 
-    public static int getId() {
+    private int getId() {
         return id.getAndIncrement();
     }
 }

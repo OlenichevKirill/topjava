@@ -10,9 +10,9 @@ public interface MealDao {
 
     Meal getById(int id);
 
-    void save(Meal meal);
+    Meal create(Meal meal);
 
-    void update(Meal meal);
+    Meal update(Meal meal);
 
     void delete(int id);
 }

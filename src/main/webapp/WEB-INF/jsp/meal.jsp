@@ -7,15 +7,15 @@
 <h3><a href="${pageContext.request.contextPath}/index.html">Home</a></h3>
 <hr>
 <h1>Edit meal</h1>
-<form action="${pageContext.request.contextPath}/meals?id=${requestScope.meal.id}" method="post">
+<form action="${pageContext.request.contextPath}/meals?id=${meal.id}" method="post">
     <label for="date"> DateTime:
-        <input type="datetime-local" name="dateTime" id="date" value="${requestScope.meal.dateTime}">
+        <input type="datetime-local" name="dateTime" id="date" value="${meal.dateTime}">
     </label><br>
     <label for="description"> Description:
-        <input type="text" name="description" id="description" value="${requestScope.meal.description}">
+        <input type="text" name="description" id="description" value="${meal.description}">
     </label><br>
     <label for="calories"> Calories:
-        <input type="number" name="calories" id="calories" value="${requestScope.meal.calories}">
+        <input type="number" name="calories" id="calories" value="${meal.calories}">
     </label><br>
 
     <button type="submit">Save</button>

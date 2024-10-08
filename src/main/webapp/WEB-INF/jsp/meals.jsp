@@ -19,7 +19,7 @@
         <th></th>
         <th></th>
     </tr>
-    <c:forEach var="meal" items="${requestScope.mealTo}">
+    <c:forEach var="meal" items="${mealTo}">
         <tr style="color: ${meal.excess? "red": "green"}">
             <fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime"
                            type="both"/>

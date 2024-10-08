@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public class DateTimeFormatterUtil {
 
-    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
     public static LocalDateTime getLocalDateTime(String text) {
-        return LocalDateTime.parse(text.replace("T", " "), dateTimeFormatter);
+        return LocalDateTime.parse(text, DATE_TIME_FORMATTER);
     }
 }
