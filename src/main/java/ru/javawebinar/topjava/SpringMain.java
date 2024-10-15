@@ -5,6 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
@@ -36,6 +37,11 @@ public class SpringMain {
             System.out.println();
 
             mealRestController.getAll().forEach(System.out::println);
+
+            MealRepository repository = appCtx.getBean(MealRepository.class);
+
+            repository.save(new Meal(1, LocalDateTime.of(2024, Month.JANUARY, 30, 10, 0), "Завтрак 2024", 100, 2), 2);
+            System.out.println(repository.getAll(2));
 
 
         }

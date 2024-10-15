@@ -23,17 +23,17 @@
     <h2>Meals</h2>
     <form action="${pageContext.request.contextPath}/meals">
         <label for="startDate"> Start date:
-            <input type="date" name="startDate" id="startDate" value="${startDate}">
+            <input type="date" name="startDate" id="startDate" value="${param.startDate}">
         </label>
         <label for="startTime"> Start time:
-            <input type="time" name="startTime" id="startTime" value="${startTime}">
+            <input type="time" name="startTime" id="startTime" value="${param.startTime}">
         </label>
         <br>
         <label for="endDate"> End date:
-            <input type="date" name="endDate" id="endDate" value="${endDate}">
+            <input type="date" name="endDate" id="endDate" value="${param.endDate}">
         </label>
         <label for="endTime"> End time:
-            <input type="time" name="endTime" id="endTime" value="${endTime}">
+            <input type="time" name="endTime" id="endTime" value="${param.endTime}">
         </label>
         <br>
         <button type="submit">Filter</button>
