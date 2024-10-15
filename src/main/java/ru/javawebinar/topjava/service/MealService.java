@@ -38,7 +38,7 @@ public class MealService {
         return repository.getAllByFilter(userId, localDateTimeStart, localDateTimeEnd);
     }
 
-    public void update(Meal meal, int id, int userId) {
-        checkNotFoundWithId(repository.save(meal, userId), id);
+    public void update(Meal meal, int userId) {
+        checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 }

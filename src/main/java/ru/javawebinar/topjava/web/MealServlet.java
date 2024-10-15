@@ -80,10 +80,10 @@ public class MealServlet extends HttpServlet {
                 if (!StringUtils.hasText(startDate) && !StringUtils.hasText(endDate) && !StringUtils.hasText(startTime) && !StringUtils.hasText(endTime)) {
                     request.setAttribute("meals", mealRestController.getAll());
                 } else {
-                    LocalDate startLocalDate = !StringUtils.hasText(startDate) ? LocalDate.MIN : LocalDate.parse(startDate);
-                    LocalDate endLocalDate = !StringUtils.hasText(endDate) ? LocalDate.MAX : LocalDate.parse(endDate);
-                    LocalTime startLocalTme = !StringUtils.hasText(startTime) ? LocalTime.MIN : LocalTime.parse(startTime);
-                    LocalTime endTimeDate = !StringUtils.hasText(endTime) ? LocalTime.MAX : LocalTime.parse(endTime);
+                    LocalDate startLocalDate = !StringUtils.hasText(startDate) ? null : LocalDate.parse(startDate);
+                    LocalDate endLocalDate = !StringUtils.hasText(endDate) ? null : LocalDate.parse(endDate);
+                    LocalTime startLocalTme = !StringUtils.hasText(startTime) ? null : LocalTime.parse(startTime);
+                    LocalTime endTimeDate = !StringUtils.hasText(endTime) ? null : LocalTime.parse(endTime);
 
                     request.setAttribute("meals", mealRestController.getAllByFilter(startLocalDate,
                             endLocalDate, startLocalTme, endTimeDate));

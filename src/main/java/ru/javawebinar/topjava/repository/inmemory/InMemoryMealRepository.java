@@ -27,14 +27,19 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        meal.setUserId(userId);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
+            meal.setUserId(userId);
             repository.put(meal.getId(), meal);
             return meal;
         }
         Meal mealGet = repository.get(meal.getId());
-        return !mealGet.getUserId().equals(userId) ? null : repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        if (mealGet == null || !mealGet.getUserId().equals(userId)) {
+            return null;
+        } else {
+            meal.setUserId(userId);
+            return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        }
     }
 
     @Override
@@ -51,17 +56,17 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getAllByPredicates(userId, meal -> true);
+        return getAllByPredicate(userId, meal -> true);
     }
 
     public List<Meal> getAllByFilter(int userId, LocalDateTime localDateTimeStart, LocalDateTime localDateTimeEnd) {
-        return getAllByPredicates(userId, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime(), localDateTimeStart, localDateTimeEnd));
+        return getAllByPredicate(userId, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDateTime(), localDateTimeStart, localDateTimeEnd));
     }
 
-    private List<Meal> getAllByPredicates(Integer userId, Predicate<Meal> filterByLocalDateTime) {
+    private List<Meal> getAllByPredicate(Integer userId, Predicate<Meal> filter) {
         return repository.values().stream()
                 .filter(meal -> meal.getUserId().equals(userId))
-                .filter(filterByLocalDateTime)
+                .filter(filter)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
