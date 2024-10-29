@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.service;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,8 +19,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.ADMIN_MEAL_ID;
@@ -46,26 +45,19 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+    private static final StringBuilder builder = new StringBuilder();
+
     @Autowired
     private MealService service;
 
-    private long startTime;
-
-    private static final List<String> infoTimeTests = new ArrayList<>();
-
     @Rule
-    public TestWatcher watchman = new TestWatcher() {
+    public Stopwatch watch = new Stopwatch() {
         @Override
-        protected void starting(Description description) {
-            startTime = System.nanoTime();
-        }
-
-        @Override
-        protected void finished(Description description) {
-            long endTime = System.nanoTime();
-            long time = endTime - startTime;
-            log.info("StartTime - {} нс, EndTime - {} нс, Time: {} нс", startTime, endTime, time);
-            infoTimeTests.add(String.format("%s - %d нс", description.getDisplayName(), time));
+        protected void finished(long nanos, Description description) {
+            String timeTest = String.format("%-25s: %d ms",
+                    description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            log.info(timeTest);
+            builder.append(timeTest).append("\n");
         }
     };
 
@@ -150,8 +142,6 @@ public class MealServiceTest {
 
     @AfterClass
     public static void afterClass() {
-        for (String infoTimeTest : infoTimeTests) {
-            log.info(infoTimeTest);
-        }
+        log.info(String.valueOf(builder));
     }
 }
