@@ -80,5 +80,5 @@ public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
                 ROW_MAPPER, userId, getDateTime(startDateTime), getDateTime(endDateTime));
     }
 
-    public abstract T getDateTime(LocalDateTime localDateTime);
+    protected abstract T getDateTime(LocalDateTime localDateTime);
 }
