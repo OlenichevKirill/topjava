@@ -35,15 +35,15 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired(required = false)
-    protected JpaUtil jpaUtil;
+//    @Autowired(required = false)
+//    protected JpaUtil jpaUtil;
 
     @Before
     public void setup() {
         cacheManager.getCache("users").clear();
-        if (env.matchesProfiles(Profiles.JPA + " || " + Profiles.DATAJPA)) {
-            jpaUtil.clear2ndLevelHibernateCache();
-        }
+//        if (env.matchesProfiles(Profiles.JPA + " || " + Profiles.DATAJPA)) {
+//            jpaUtil.clear2ndLevelHibernateCache();
+//        }
     }
 
     @Test
