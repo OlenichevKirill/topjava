@@ -55,10 +55,10 @@ public class JdbcUserRepository implements UserRepository {
         } else if (namedParameterJdbcTemplate.update("""
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
-                """, parameterSource) == 0) {
-            return null;
-        } else {
+                """, parameterSource) != 0) {
             jdbcTemplate.update("DELETE FROM user_role WHERE user_id = ?", user.getId());
+        } else {
+            return null;
         }
         MapSqlParameterSource[] args = user.getRoles().stream()
                 .map(role -> Map.of(
@@ -97,7 +97,7 @@ public class JdbcUserRepository implements UserRepository {
                     Map<Integer, User> users = new LinkedHashMap<>();
                     while (rs.next()) {
                         Integer id = rs.getInt("id");
-                        if (users.putIfAbsent(id, null) == null) {
+                        if (users.get(id) == null) {
                             User user = ROW_MAPPER.mapRow(rs, 0);
                             user.setRoles(null);
                             users.put(id, user);
