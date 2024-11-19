@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
-import ru.javawebinar.topjava.util.JdbcValidatorUtil;
+import ru.javawebinar.topjava.util.ValidatorUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -46,7 +46,7 @@ public class JdbcUserRepository implements UserRepository {
     @Transactional
     @Override
     public User save(User user) {
-        JdbcValidatorUtil.validate(user);
+        ValidatorUtil.validate(user);
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
 
         if (user.isNew()) {
@@ -57,8 +57,9 @@ public class JdbcUserRepository implements UserRepository {
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
                 """, parameterSource) == 0) {
             return null;
+        } else {
+            jdbcTemplate.update("DELETE FROM user_role WHERE user_id = ?", user.getId());
         }
-        jdbcTemplate.update("DELETE FROM user_role WHERE user_id = ?", user.getId());
         MapSqlParameterSource[] args = user.getRoles().stream()
                 .map(role -> Map.of(
                         "user_id", user.getId(),
@@ -96,15 +97,11 @@ public class JdbcUserRepository implements UserRepository {
                     Map<Integer, User> users = new LinkedHashMap<>();
                     while (rs.next()) {
                         Integer id = rs.getInt("id");
-                        users.putIfAbsent(id, new User(id,
-                                rs.getString("name"),
-                                rs.getString("email"),
-                                rs.getString("password"),
-                                rs.getInt("calories_per_day"),
-                                rs.getBoolean("enabled"),
-                                rs.getDate("registered"),
-                                null
-                        ));
+                        if (users.putIfAbsent(id, null) == null) {
+                            User user = ROW_MAPPER.mapRow(rs, 0);
+                            user.setRoles(null);
+                            users.put(id, user);
+                        }
                         String roleName = rs.getString("role");
                         if (roleName != null) {
                             Role role = Role.valueOf(roleName);

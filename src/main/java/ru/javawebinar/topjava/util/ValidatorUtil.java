@@ -4,16 +4,13 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.Set;
 
-public class JdbcValidatorUtil {
+public class ValidatorUtil {
 
-    private static final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    private static final Validator validator = validatorFactory.getValidator();
-
-    private JdbcValidatorUtil() {
+    private ValidatorUtil() {
     }
 
     public static <T> void validate(T entity) {
