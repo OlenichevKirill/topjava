@@ -89,10 +89,13 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void filter() throws Exception {
-        String startDateTime = "2020-01-30T10:00:00";
-        String endDateTime = "2020-01-31T13:00:00";
-        perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDateTime="
-                + startDateTime + "&endDateTime=" + endDateTime))
+        String startDate = "2020-01-30";
+        String startTime = "10:00";
+        String endDate = "2020-01-31";
+        String endTime = "13:00";
+
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter?startDate=" + startDate +
+                "&startTime=" + startTime + "&endDate=" + endDate + "&endTime=" + endTime))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
