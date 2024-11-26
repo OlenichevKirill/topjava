@@ -28,11 +28,13 @@ public class MealRestController extends AbstractMealController {
 
     static final String REST_URL = "/rest/meals";
 
+    @Override
     @GetMapping
     public List<MealTo> getAll() {
         return super.getAll();
     }
 
+    @Override
     @GetMapping("/{id}")
     public Meal get(@PathVariable("id") int id) {
         return super.get(id);
@@ -47,6 +49,7 @@ public class MealRestController extends AbstractMealController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") int id) {
