@@ -36,3 +36,15 @@ $(function () {
         })
     );
 });
+
+
+function filterMeals() {
+    $.get(ctx.ajaxUrl + "filter", $('#filter').serialize(), function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+    });
+}
+
+function clearFilter() {
+    $('#filter').find(":input").val("");
+    updateTable();
+}
