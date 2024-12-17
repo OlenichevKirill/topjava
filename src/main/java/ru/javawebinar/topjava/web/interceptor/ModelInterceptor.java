@@ -20,6 +20,7 @@ public class ModelInterceptor implements HandlerInterceptor {
             if (authorizedUser != null) {
                 modelAndView.getModelMap().addAttribute("userTo", authorizedUser.getUserTo());
             }
+            modelAndView.getModelMap().addAttribute("path", request.getRequestURI());
         }
     }
 }
